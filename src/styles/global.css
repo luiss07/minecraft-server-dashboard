@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"); */
 
 @tailwind base;
 @tailwind components;
@@ -6,18 +6,6 @@
 
 body {
   @apply m-0 p-0;
-}
-
-.app_layout {
-  @apply flex w-screen h-screen
-}
-
-.sideBar_element {
-  @apply flex items-center py-4 px-6 text-white font-mono hover:bg-gray-700;
-}
-
-.sideBar_element_active {
-  @apply bg-hover-gray before:absolute before:block before:bg-green-800 before:w-1 before:h-7 before:left-2;
 }
 
 .content_layout {

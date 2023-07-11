@@ -13,7 +13,7 @@ module.exports = {
       },
       colors: {
         'primary-orange': '#FF5722',
-        'sideNav-bg': '#171615',
+        'nav-gray': '#171615',
         'hover-gray': '#2d2d2d',
       }
     },
