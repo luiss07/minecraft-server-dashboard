@@ -1,6 +1,6 @@
 'use client'
 
-import {NavData} from './Data';
+import {NavData} from './data';
 import Link from 'next/link';
 import { useSelectedLayoutSegment } from 'next/navigation'
 
@@ -13,7 +13,7 @@ const SideNavBar = () => {
   const activeSegment = useSelectedLayoutSegment();
   
   return (
-    <div className='w-64 bg-nav-gray h-full overflow-auto'>
+    <div className='flex flex-col w-64 m-0 bg-nav-gray h-[calc(100vh-56px)] z-auto overflow-hidden'>
       { NavData.map ( (val, key) => {
             return <Link 
                     className={(activeSegment != val.targetSegement) ? styles.sideBar_element : (styles.sideBar_element + ' ' + styles.sideBar_element_active)}

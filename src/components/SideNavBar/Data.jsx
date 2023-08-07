@@ -13,19 +13,19 @@ export const NavData = [
     {
         title: 'Status',
         icon: <StartStop className='fill-gray-600 group-hover:fill-white'/>,
-        link: '/Status',
-        targetSegement: 'Status'
+        link: '/status',
+        targetSegement: 'status'
     },
     {
         title: 'Console',
         icon: <TerminalIcon className='fill-gray-600 group-hover:fill-white'/>,
-        link: '/Console',
-        targetSegement: 'Console'
+        link: '/console',
+        targetSegement: 'console'
     },
     {
         title: 'Whitelist',
         icon: <PersonAddIcon className='fill-gray-600 group-hover:fill-white'/>,
-        link: '/Whitelist',
-        targetSegement: 'Whitelist'
+        link: '/whitelist',
+        targetSegement: 'whitelist'
     }
 ]
