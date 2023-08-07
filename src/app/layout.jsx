@@ -1,7 +1,7 @@
 import '@src/styles/globals.css';
 
 import SideNavBar from '@src/components/sideNavBar/nav';
-import TopBar from '@src/components/TopBar/topBar';
+import TopBar from '@src/components/topBar/topBar';
 
 export const metadata = {
     title: "Minecraft",
