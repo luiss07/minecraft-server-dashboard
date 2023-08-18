@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from 'react';
 
@@ -12,10 +12,24 @@ const Status = () => {
   const toggle = () => {
     setIsOn(!isOn);
   };
+
+  const [status, setStatus] = useState('');
+
+  const handleStartServer = async () => {
+    try {
+      const response = await fetch('/api/start-server', { method: 'GET' });
+      const data = await response.json();
+      setStatus(data.status);
+      toggle();
+    } catch (error) {
+      console.error('Error starting server:', error);
+    }
+  };
   
   return (
     <div className='content_layout'>
-        <StartStopCard button={<Button onClick={() => toggle()} >Button</Button>} isOn={isOn} />
+        <StartStopCard button={<Button onClick={handleStartServer} >Button</Button>} isOn={isOn} />
+        <p>{status}</p>
     </div>
   )
 }
