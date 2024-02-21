@@ -39,3 +39,6 @@ global-old.css
 
 # Ignore File with things done and removed
 things-done.md
+
+# VsCode extensions settings
+extensions.json
