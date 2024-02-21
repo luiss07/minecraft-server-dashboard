@@ -36,3 +36,6 @@ next-env.d.ts
 
 # Others
 global-old.css
+
+# Ignore File with things done and removed
+things-done.md
