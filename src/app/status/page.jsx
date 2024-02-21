@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 // import { spawn } from 'child_process';
 import { useServerStatus } from '@src/context/serverStatus.context';
 
-import { getStatus } from "@/src/lib/statusFetch"
-
 import StartStopCard from "@src/components/startStop"
 import { Button } from "@src/components/ui/button"
 import { LedLight } from "@src/components/ui/ledLight"
