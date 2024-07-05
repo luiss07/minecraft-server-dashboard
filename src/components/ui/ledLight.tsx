@@ -1,7 +1,15 @@
-import PropTypes from "prop-types";
+import React from "react";
 import '@src/styles/globals.css';
 
-const styles = {
+interface LedLightProps {
+    isOn: boolean;
+}
+
+interface Styles {
+    [key: string]: React.CSSProperties;
+}
+
+const styles: Styles = {
     led_box: {
         height: "26px",
         width: "30px",
@@ -24,17 +32,12 @@ const styles = {
     }
 };
 
-const LedLight = ( props ) => {
-    const { isOn }  = props;
+const LedLight: React.FC<LedLightProps> = ({ isOn }) => {
     return (
         <div style={styles.led_box}>
-            <div style={(isOn == true) ? {...styles.led_frame, ...styles.greenLed} : {...styles.led_frame, ...styles.redLed}}/>
+            <div style={isOn ? { ...styles.led_frame, ...styles.greenLed } : { ...styles.led_frame, ...styles.redLed }} />
         </div>
-    )
+    );
 }
 
-LedLight.propTypes = {
-    isOn: PropTypes.boolean
-};
-
-export default LedLight
+export default LedLight;

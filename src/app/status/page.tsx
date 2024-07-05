@@ -1,19 +1,16 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from 'react';
-// import { spawn } from 'child_process';
+import React, { useEffect, useState } from 'react';
 import { useServerStatus } from '@src/context/serverStatus.context';
+import StartStopCard from "@src/components/startStop";
+import { Button } from "@src/components/ui/button";
+// import { LedLight } from "@src/components/ui/ledLight";
 
-import StartStopCard from "@src/components/startStop"
-import { Button } from "@src/components/ui/button"
-import { LedLight } from "@src/components/ui/ledLight"
-import { Dataset } from '@mui/icons-material';
-
-const Status = () => {
+const Status: React.FC = () => {
   const { isServerRunning, setServerRunning } = useServerStatus();
 
-  const [logContent, setLogContent] = useState('');
-  const [checkLogs, setCheckLogs] = useState(false);
+  const [logContent, setLogContent] = useState<string>('');
+  const [checkLogs, setCheckLogs] = useState<boolean>(false);
 
   const fetchLogContent = async () => {
     await fetch('/api/status-server', { method: 'GET' })
@@ -40,14 +37,13 @@ const Status = () => {
         setServerRunning(true);
       }
     }
-  }, [logContent]);
+  }, [logContent, setServerRunning]);
 
   useEffect(() => {
-    let interval;
-    console.log("called interval useEffect");
+    let interval: NodeJS.Timeout;
 
     if (checkLogs) {
-      interval = setInterval(fetchLogContent, 4000); // Call your function every 5 seconds
+      interval = setInterval(fetchLogContent, 4000); // Call your function every 4 seconds
     }
 
     return () => {
@@ -76,13 +72,13 @@ const Status = () => {
       <StartStopCard button={
         (isServerRunning) ?
           <div>
-            <Button onClick={stopServer} >RESTART</Button>
-            <Button onClick={stopServer} >STOP</Button>
+            <Button onClick={stopServer}>RESTART</Button>
+            <Button onClick={stopServer}>STOP</Button>
           </div> :
-          <Button onClick={startServer} >START</Button>
+          <Button onClick={startServer}>START</Button>
       } isOn={isServerRunning} />
     </div>
-  )
+  );
 }
 
-export default Status
+export default Status;
