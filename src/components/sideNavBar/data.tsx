@@ -16,12 +16,6 @@ export const NavData: NavItem[] = [
         targetSegement: null
     },
     {
-        title: 'Status',
-        icon: <PowerSettingsNew className='fill-gray-600 group-hover:fill-white'/>,
-        link: '/status',
-        targetSegement: 'status'
-    },
-    {
         title: 'Console',
         icon: <Terminal className='fill-gray-600 group-hover:fill-white'/>,
         link: '/console',
