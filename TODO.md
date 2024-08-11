@@ -1,7 +1,7 @@
 # TODO
 
 ## In progress
-- [] run the web app through the web app
+- [] run the server through the web app
 - [] stop the server from the web app
 - [] restart the server from the web app
 
