@@ -12,80 +12,110 @@ import {
 } from "@src/components/ui/card";
 import StartStopCard from "@src/components/startStop";
 import { Button } from "@src/components/ui/button";
+import { StateMachine, StateName } from "@src/lib/stateMachine";
+import { DataArray } from "@mui/icons-material";
 // import { LedLight } from "@src/components/ui/ledLight";
 
 const Home: React.FC = () => {
 
-  const { isServerRunning, setServerRunning } = useServerStatus();
+  const { serverState, setServerState, playerCount, setPlayerCount } = useServerStatus();
 
-  const [logContent, setLogContent] = useState<string>('');
-  const [checkLogs, setCheckLogs] = useState<boolean>(false);
+  /* Have to return a new object since useEffect runs on reference change */
+  const updateServerState = (toState : StateName) => {
+    setServerState((prev) => {
+      const newState = new StateMachine(prev.getCurrentStatus()); // Preserve the current status
+      newState.transitionTo(toState);
+      return newState;
+    });
+  }
 
-  const fetchLogContent = async () => {
-    await fetch('/api/status-server', { method: 'GET' })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          setLogContent(data.logs);
-        } else {
-          setLogContent('error-occurred');
+  /* useEffect(() => {
+    const fetchInitialServerState = async () => {
+      try {
+        const response = await fetch('/api/status-server', { method: 'GET' });
+        const data = await response.json();
+
+        if (data.status === 'online') {
+          setServerState((prev) => {
+            prev.transitionTo('RUNNING');
+            return new StateMachine('RUNNING');
+          });
         }
-      })
-      .catch(error => {
-        console.log('Error: ' + error);
-      });
+      } catch (error) {
+        console.error('Failed to fetch server status:', error);
+        setServerState(new StateMachine('ERROR'));
+      }
+    };
+
+    fetchInitialServerState();
+  }, []); // Empty dependency array means this runs once when the component mounts. */
+
+  /* Request to check whether the server is online or not */
+  const fetchServerStatus = async () => {
+    try {
+      const response = await fetch('/api/status-server', { method: 'GET' });
+      const data = await response.json();
+
+      if (data.status === 'online' && serverState.getCurrentStatus() === ('STARTING' || 'STOPPED')) {
+        updateServerState('RUNNING');
+      } else if (data.status === 'offline' && serverState.getCurrentStatus() === 'RUNNING') {
+        throw new Error('The server seems to have stopped unexpectedly! Go check the logs.');
+      }
+    } catch (error) {
+      console.error('Failed to fetch server status:', error);
+      updateServerState('ERROR');
+    }
   };
 
-  useEffect(() => {
-    if (logContent !== '') {
-      if (logContent === 'error-occurred') {
-        setServerRunning(false);
-      } else if (logContent.includes('All dimensions are saved')) {
-        setServerRunning(false);
-      } else if (logContent.includes('Done')) {
-        setServerRunning(true);
-      }
-    }
-  }, [logContent, setServerRunning]);
-
+  /* When the server has been launched check if it is accessible by players every 10 seconds */
   useEffect(() => {
     let interval: NodeJS.Timeout;
-
-    if (checkLogs) {
-      interval = setInterval(fetchLogContent, 4000); // Call your function every 4 seconds
+    console.log("inside useEffect timeout" + serverState.getCurrentStatus());
+    if (serverState.getCurrentStatus() === 'STARTING' || serverState.getCurrentStatus() === 'RUNNING') {
+      console.log("inside useEffect timeout if");
+      interval = setInterval(fetchServerStatus, 10000);
+    } else if (serverState.getCurrentStatus() === 'ERROR') {
+      //stopServer();
     }
 
     return () => {
-      clearInterval(interval); // Clean up the interval when the component unmounts or when isRunning changes to false
+      clearInterval(interval); // Clean up the interval when the component unmounts
     };
-  }, [checkLogs]);
+  }, [serverState.getCurrentStatus()]);
 
-  // used to start the server script 
+  /* Request to launch the server */
   const startServer = async () => {
-    fetch('http://localhost:3000/api/start-server', { method: 'GET' })
-      .then(response => response.json())
-      .then(data => {
-        console.log("data returned");
-        console.log(data);
-        setCheckLogs(true);
-      })
-      .catch(error => { console.log("error returned"); console.log(error); });
+    try {
+      const response = await fetch('/api/start-server', { method: 'GET' });
+      const data = await response.json();
+
+      if (data.status === 'executed') {
+        updateServerState('STARTING');
+      } else {
+        throw new Error('The server could not be launched! Go check the logs.');
+      }
+    } catch (error) {
+      console.error('Failed to start the server:', error);
+      updateServerState('ERROR');
+    }
   };
 
   const stopServer = async () => {
-    setCheckLogs(false);
+    console.log('called stop function');
+    // TODO implement the stop server API
+    updateServerState('STOPPED');
   };
 
   return (
     <div className='content_layout'>
       <StartStopCard button={
-        (isServerRunning) ?
+        serverState.getCurrentStatus() === 'RUNNING' ?
           <div>
             <Button onClick={stopServer}>RESTART</Button>
             <Button onClick={stopServer}>STOP</Button>
           </div> :
           <Button onClick={startServer}>START</Button>
-      } isOn={isServerRunning} />
+      } status={serverState.getStateInfo()} />
 
       <Card className='flex flex-col items-center justify-center w-2/5 h-56 m-5 shadow-lg border-none'>
         <CardHeader className='flex flex-col items-center justify-center p-0 my-7'>
